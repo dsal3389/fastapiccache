@@ -2,6 +2,11 @@
 # fastapicache
 fastapicache is a package that privde simple and fast caching system for the fastapi package
 
+## install
+note for the double C in the name
+```sh
+pip install fastapiccache
+```
 
 ## usage
 
