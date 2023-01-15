@@ -1,8 +1,11 @@
 [tool.poetry]
-name = "fastapicache"
+name = "fastapiccache"
 version = "0.1.0"
 description = ""
 authors = ["Daniel Sonbolian <dsal3389@gmail.com>"]
+packages = [
+    { include = "fastapiccache", from = "lib" }
+]
 readme = "README.md"
 
 [tool.poetry.dependencies]

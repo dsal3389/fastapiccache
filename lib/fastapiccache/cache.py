@@ -11,17 +11,11 @@ __all__ = ["FastAPICache", "fastapicache", "INMEMORY_CACHE"]
 INMEMORY_CACHE = 0x1
 
 
-class KeyConflictError(Exception):
-    def __init__(self, key):
-        super().__init__(f"item with key {key} registered multiple times")
-
-
 class _CacheItemBase:
 
     __slots__ = ["func", "revalidate", "_start_record"]
 
     def __init__(self, func: Callable, revalidate: int) -> None:
-        print(func.__name__, revalidate)
         self.func = func
         self.revalidate = revalidate
         self._start_record = time.time()
@@ -64,7 +58,9 @@ class _CacheInMemory(_CacheItemBase):
         return self._results
 
 
-_cache_methods = {INMEMORY_CACHE: _CacheInMemory}
+_cache_methods = {
+    INMEMORY_CACHE: _CacheInMemory
+}
 
 
 class FastAPICache:
@@ -74,30 +70,14 @@ class FastAPICache:
     def __init__(self, *, hash_func: Callable = hash) -> None:
         self._hash_func = hash_func
 
-    def cache(
-        self,
-        func: Optional[Callable] = None,
-        /,
-        *,
-        method: int = INMEMORY_CACHE,
-        revalidate: int = 60,
-        **kwargs,
-    ) -> Callable:
+    def cache( self, func: Optional[Callable] = None, /, *, method: int = INMEMORY_CACHE, revalidate: int = 60, **kwargs) -> Callable:
         if func is not None:
             return self._cache(func)
         return functools.partial(
             self._cache, method=method, revalidate=revalidate, **kwargs
         )
 
-    def _cache(
-        self,
-        func: Callable,
-        /,
-        *,
-        method: int = INMEMORY_CACHE,
-        revalidate: int = 60,
-        **kwargs,
-    ) -> Callable:
+    def _cache(self, func: Callable, /, *, method: int = INMEMORY_CACHE, revalidate: int = 60, **kwargs) -> Callable:
         if method not in _cache_methods:
             raise ValueError(f"unknown cache method {method} for {func.__name__}")
         cache_item = _cache_methods[method](func, revalidate, **kwargs)
